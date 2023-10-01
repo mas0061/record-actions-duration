@@ -5,9 +5,11 @@ async function run() {
     const repositoryName = core.getInput('repository_name')
     const workflowName = core.getInput('workflow_name')
 
-    console.log(repositoryName)
-    console.log(workflowName)
+    core.info(repositoryName)
+    core.info(workflowName)
   } catch(error) {
     core.setFailed(error.message)
   }
 }
+
+run()
