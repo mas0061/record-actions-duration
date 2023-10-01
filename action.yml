@@ -4,11 +4,12 @@ inputs:
   repository_name:
     description: 'Repository name of the Actions you want to measure'
     required: true
-    default: ''
   workflow_name:
-    description: 'Workflow name of the Actions you want to measure'
+    description: 'Workflow file name of the Actions you want to measure'
     required: true
-    default: ''
+  token:
+    description: 'Token of the repository to be measured'
+    required: true
 runs:
   using: 'node20'
   main: 'dist/index.js'

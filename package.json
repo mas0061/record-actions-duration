@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bundle": "ncc build index.js --license license.txt",
-    "exec-local": "npm run bundle && act -j test-record-actions-duration"
+    "act": "npm run bundle && act --secret-file .secrets -j test-record-actions-duration"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/mas0061/record-actions-duration#readme",
   "dependencies": {
-    "@actions/core": "^1.10.1"
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^5.1.1",
+    "date-fns": "^2.30.0"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.0"
