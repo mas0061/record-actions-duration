@@ -1,5 +1,26 @@
 {
+  "name": "record-actions-duration",
+  "description": "",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle": "ncc build index.js --license license.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mas0061/record-actions-duration.git"
+  },
+  "author": "mas0061",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mas0061/record-actions-duration/issues"
+  },
+  "homepage": "https://github.com/mas0061/record-actions-duration#readme",
   "dependencies": {
     "@actions/core": "^1.10.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.0"
   }
 }
