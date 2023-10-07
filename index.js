@@ -40,7 +40,7 @@ async function getWorkflowRuns(octokit, owner, repo, workflowName) {
 const repositoryName = core.getInput('repository_name')
 // repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
 if (!repositoryName || repositoryName.split('/').length !== 2 || repositoryName.split('/').some((name) => name.length === 0)) {
-  core.setFailed('Invalid repository name')
+  core.setFailed('Invalid repository name. It should be in the format "owner/repo".')
   process.exit(1)
 }
 

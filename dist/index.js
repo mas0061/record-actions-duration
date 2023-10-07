@@ -13083,15 +13083,25 @@ async function getWorkflowRuns(octokit, owner, repo, workflowName) {
     repo,
     workflow_id: workflowName
   })
+
   return actionsRun.workflow_runs
 }
 
 const repositoryName = core.getInput('repository_name')
+// repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
+if (!repositoryName || repositoryName.split('/').length !== 2 || repositoryName.split('/').some((name) => name.length === 0)) {
+  core.setFailed('Invalid repository name. It should be in the format "owner/repo".')
+  process.exit(1)
+}
+
 const [owner, repo] = repositoryName.split('/')
 const workflowName = core.getInput('workflow_name')
 const token = core.getInput('token')
 
-run(owner, repo, workflowName, token)
+run(owner, repo, workflowName, token).catch(error =>{
+  core.error(error)
+  core.setFailed(error.message)
+})
 })();
 
 module.exports = __webpack_exports__;
