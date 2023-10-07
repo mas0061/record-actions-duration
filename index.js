@@ -24,6 +24,7 @@ async function run(owner, repo, workflowName, token) {
   } catch(error) {
     core.error(error)
     core.setFailed(error.message)
+    process.exit(1)
   }
 }
 
@@ -51,4 +52,5 @@ const token = core.getInput('token')
 run(owner, repo, workflowName, token).catch(error =>{
   core.error(error)
   core.setFailed(error.message)
+  process.exit(1)
 })
