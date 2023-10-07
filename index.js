@@ -15,12 +15,7 @@ async function run() {
     core.info(repositoryName)
     core.info(workflowName)
 
-    const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
-      owner: repositoryName.split('/')[0],
-      repo: repositoryName.split('/')[1],
-      workflow_id: workflowName
-    })
-    const runs = actionsRun.workflow_runs
+    const runs = await getWorkflowRuns(octokit, repositoryName, workflowName)
 
     for (const run of runs) {
       const { data: duration } = await octokit.rest.actions.getWorkflowRunUsage({
@@ -34,6 +29,15 @@ async function run() {
     core.error(error)
     core.setFailed(error.message)
   }
+}
+
+async function getWorkflowRuns(octokit, repositoryName, workflowName) {
+  const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
+    owner: repositoryName.split('/')[0],
+    repo: repositoryName.split('/')[1],
+    workflow_id: workflowName
+  })
+  return actionsRun.workflow_runs
 }
 
 run()
