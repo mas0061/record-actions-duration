@@ -1,0 +1,15 @@
+name: 'record-actions-duration'
+description: 'This custom action records the execution time of GitHub Actions.'
+inputs:
+  repository_name:
+    description: 'Repository name of the Actions you want to measure'
+    required: true
+  workflow_name:
+    description: 'Workflow file name of the Actions you want to measure'
+    required: true
+  token:
+    description: 'Token of the repository to be measured'
+    required: true
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

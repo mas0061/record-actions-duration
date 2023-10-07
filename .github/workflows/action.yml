@@ -1,0 +1,13 @@
+on:
+  pull_request:
+
+jobs:
+  test-record-actions-duration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          repository_name: 'mas0061/nuxt3-practice'
+          workflow_name: 'ci.yml'
+          token: ${{ secrets.GITHUB_TOKEN }}
