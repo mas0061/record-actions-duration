@@ -28,17 +28,31 @@ async function run(owner, repo, workflowName, token) {
 }
 
 async function getWorkflowRuns(octokit, owner, repo, workflowName) {
-  const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
-    owner,
-    repo,
-    workflow_id: workflowName
-  })
+  try {
+    const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
+      owner,
+      repo,
+      workflow_id: workflowName
+    })
+  } catch (error) {
+    console.error(error)
+    core.setFailed(error.message)
+  }
   return actionsRun.workflow_runs
 }
 
 const repositoryName = core.getInput('repository_name')
+// repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
+if (!repositoryName || repositoryName.split('/').length !== 2 || repositoryName.split('/').some((name) => name.length === 0)) {
+  core.setFailed('Invalid repository name')
+  return
+}
+
 const [owner, repo] = repositoryName.split('/')
 const workflowName = core.getInput('workflow_name')
 const token = core.getInput('token')
 
-run(owner, repo, workflowName, token)
+run(owner, repo, workflowName, token).catch(error =>{
+  core.error(error)
+  core.setFailed(error.message)
+})
