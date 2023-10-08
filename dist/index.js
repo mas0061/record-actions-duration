@@ -1,6 +1,21 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 1539:
+/***/ ((module) => {
+
+function formatDuration(durationInMs) {
+  const durationInSec = durationInMs / 1000;
+  const hours = Math.floor(durationInSec / 3600);
+  const minutes = Math.floor((durationInSec % 3600) / 60);
+  const seconds = Math.floor(durationInSec % 60);
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+module.exports = { formatDuration };
+
+/***/ }),
+
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -13054,6 +13069,8 @@ const github = __nccwpck_require__(5438)
 const format = __nccwpck_require__(2168)
 const parseISO = __nccwpck_require__(3390)
 
+const { formatDuration } = __nccwpck_require__(1539)
+
 async function run(owner, repo, workflowName, token) {
   try {
     const octokit = github.getOctokit(token)
@@ -13069,7 +13086,13 @@ async function run(owner, repo, workflowName, token) {
         repo,
         run_id: run.id
       })
-      core.info(`${run.id}: ${duration.run_duration_ms}ms: ${format(parseISO(run.created_at), 'yyyy/MM/dd HH:mm:ss')}`)
+      // run.idが取得できない、duration.run_duration_msが取得できない、run.created_atが取得できない場合は次のループに移る
+      if (!run.id || !duration.run_duration_ms || !run.created_at) {
+        continue
+      }
+
+      const durationFormatted = formatDuration(duration.run_duration_ms)
+      core.info(`${run.id}, ${durationFormatted}, ${format(parseISO(run.created_at), 'yyyy/MM/dd HH:mm:ss')}`)
     }
   } catch(error) {
     core.error(error)
