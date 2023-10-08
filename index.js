@@ -3,6 +3,7 @@ const github = require('@actions/github')
 
 const format = require('date-fns/format')
 const parseISO = require('date-fns/parseISO')
+const formatDuration = require('date-fns/formatDuration')
 
 async function run(owner, repo, workflowName, token) {
   try {
@@ -19,7 +20,17 @@ async function run(owner, repo, workflowName, token) {
         repo,
         run_id: run.id
       })
-      core.info(`${run.id}: ${duration.run_duration_ms}ms: ${format(parseISO(run.created_at), 'yyyy/MM/dd HH:mm:ss')}`)
+      // run.idが取得できない、duration.run_duration_msが取得できない、run.created_atが取得できない場合は次のループに移る
+      if (!run.id || !duration.run_duration_ms || !run.created_at) {
+        continue
+      }
+
+      const durationInSec = duration.run_duration_ms / 1000;
+      const hours = Math.floor(durationInSec / 3600);
+      const minutes = Math.floor((durationInSec % 3600) / 60);
+      const seconds = Math.floor(durationInSec % 60);
+      const durationFormatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      core.info(`${run.id}, ${durationFormatted}, ${format(parseISO(run.created_at), 'yyyy/MM/dd HH:mm:ss')}`)
     }
   } catch(error) {
     core.error(error)
