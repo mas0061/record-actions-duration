@@ -1,11 +1,11 @@
 const core = require('@actions/core')
-const { format, parseISO } = require('date-fns')
 
 const { formatDuration } = require('./durations')
 
 async function logWorkflowDurations(octokit, owner, repo, workflowName) {
   try {
     const runs = await getWorkflowRuns(octokit, owner, repo, workflowName)
+    const durations = []
 
     for (const run of runs) {
       const { data: duration } = await octokit.rest.actions.getWorkflowRunUsage({
@@ -20,12 +20,13 @@ async function logWorkflowDurations(octokit, owner, repo, workflowName) {
       }
 
       const durationFormatted = formatDuration(duration.run_duration_ms)
-      core.info(`${run.id}, ${durationFormatted}, ${format(parseISO(run.created_at), 'yyyy/MM/dd HH:mm:ss')}`)
+      durations.push({ id: run.id, duration: durationFormatted, created_at: run.created_at })
     }
+
+    return durations
   } catch(error) {
     core.error(error)
     core.setFailed(error.message)
-    process.exit(1)
   }
 }
 

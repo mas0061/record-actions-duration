@@ -19,8 +19,15 @@ const octokit = github.getOctokit(token)
 core.info(`${owner}/${repo}`)
 core.info(workflowName)
 
-logWorkflowDurations(octokit, owner, repo, workflowName, token).catch(error =>{
+const durations = logWorkflowDurations(octokit, owner, repo, workflowName).catch(error =>{
   core.error(error)
   core.setFailed(error.message)
   process.exit(1)
+})
+
+// durationsを1つずつcore.infoで出力する
+durations.then((durations) => {
+  durations.forEach((duration) => {
+    core.info(`${duration.id}, ${duration.duration}, ${duration.created_at}`)
+  })
 })
