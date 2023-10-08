@@ -3,7 +3,8 @@ const github = require('@actions/github')
 
 const format = require('date-fns/format')
 const parseISO = require('date-fns/parseISO')
-const formatDuration = require('date-fns/formatDuration')
+
+const { formatDuration } = require('./durations')
 
 async function run(owner, repo, workflowName, token) {
   try {
@@ -25,11 +26,7 @@ async function run(owner, repo, workflowName, token) {
         continue
       }
 
-      const durationInSec = duration.run_duration_ms / 1000;
-      const hours = Math.floor(durationInSec / 3600);
-      const minutes = Math.floor((durationInSec % 3600) / 60);
-      const seconds = Math.floor(durationInSec % 60);
-      const durationFormatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      const durationFormatted = formatDuration(duration.run_duration_ms)
       core.info(`${run.id}, ${durationFormatted}, ${format(parseISO(run.created_at), 'yyyy/MM/dd HH:mm:ss')}`)
     }
   } catch(error) {
