@@ -9,7 +9,7 @@ describe('logWorkflowDurations', () => {
     const octokit = {
       rest: {
         actions: {
-          listWorkflowRuns:vi.fn().mockResolvedValue({
+          listWorkflowRuns: vi.fn().mockResolvedValue({
             data: {
               workflow_runs: [
                 { id: 1, created_at: '2022/01/01T00:00:00Z' },
@@ -17,17 +17,18 @@ describe('logWorkflowDurations', () => {
                 { id: 3, created_at: '2022/01/03T00:00:00Z' }
             ]}
           }),
-          getWorkflowRunUsage: vi.fn().mockResolvedValue({
-            data: { run_duration_ms: 123456789 }
-          })
+          getWorkflowRunUsage: vi.fn()
+            .mockResolvedValueOnce({ data: { run_duration_ms: 123456789 } })
+            .mockResolvedValueOnce({ data: { run_duration_ms: 123457789 } })
+            .mockResolvedValueOnce({ data: { run_duration_ms: 123458789 } })
         }
       }
     };
 
     const expectedDurations = [
       { id: 1, duration: '34:17:36', created_at: '2022/01/01T00:00:00Z' },
-      { id: 2, duration: '34:17:36', created_at: '2022/01/02T00:00:00Z' },
-      { id: 3, duration: '34:17:36', created_at: '2022/01/03T00:00:00Z' }
+      { id: 2, duration: '34:17:37', created_at: '2022/01/02T00:00:00Z' },
+      { id: 3, duration: '34:17:38', created_at: '2022/01/03T00:00:00Z' }
     ];
 
     const actualDurations = await logWorkflowDurations(octokit, owner, repo, workflowName);
