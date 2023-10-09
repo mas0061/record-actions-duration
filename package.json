@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "bundle": "ncc build index.js --license license.txt",
     "act": "npm run bundle && act --secret-file .secrets -j test-record-actions-duration"
   },
@@ -24,6 +24,7 @@
     "date-fns": "^2.30.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.38.0"
+    "@vercel/ncc": "^0.38.0",
+    "vitest": "^0.34.6"
   }
 }
