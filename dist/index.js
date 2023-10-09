@@ -9635,14 +9635,17 @@ function wrappy (fn, cb) {
 /***/ ((module) => {
 
 function formatDuration(durationInMs) {
-  const durationInSec = durationInMs / 1000;
-  const hours = Math.floor(durationInSec / 3600);
-  const minutes = Math.floor((durationInSec % 3600) / 60);
-  const seconds = Math.floor(durationInSec % 60);
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  const durationInSec = durationInMs / 1000
+  const hours = Math.floor(durationInSec / 3600)
+  const minutes = Math.floor((durationInSec % 3600) / 60)
+  const seconds = Math.floor(durationInSec % 60)
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
+    .toString()
+    .padStart(2, '0')}`
 }
 
-module.exports = { formatDuration };
+module.exports = { formatDuration }
+
 
 /***/ }),
 
@@ -9657,24 +9660,26 @@ async function logWorkflowDurations(octokit, owner, repo, workflowName) {
   try {
     const runs = await getWorkflowRuns(octokit, owner, repo, workflowName)
 
-    const durations = await Promise.all(runs.map(async (run) => {
+    const durations = await Promise.all(
+      runs.map(async (run) => {
         if (!run.id || !run.created_at) return null
-  
+
         const { data: duration } = await octokit.rest.actions.getWorkflowRunUsage({
           owner,
           repo,
-          run_id: run.id
+          run_id: run.id,
         })
-  
+
         if (!duration.run_duration_ms) return null
-  
+
         const durationFormatted = formatDuration(duration.run_duration_ms)
         return { id: run.id, duration: durationFormatted, created_at: run.created_at }
-      }))
-  
-      // Filter out null values
-      return durations.filter(duration => duration !== null)
-  } catch(error) {
+      }),
+    )
+
+    // Filter out null values
+    return durations.filter((duration) => duration !== null)
+  } catch (error) {
     core.error(error)
     core.setFailed(error.message)
   }
@@ -9684,15 +9689,16 @@ async function getWorkflowRuns(octokit, owner, repo, workflowName) {
   const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
     owner,
     repo,
-    workflow_id: workflowName
+    workflow_id: workflowName,
   })
 
   return actionsRun.workflow_runs
 }
 
 module.exports = {
-  logWorkflowDurations
+  logWorkflowDurations,
 }
+
 
 /***/ }),
 
@@ -9880,7 +9886,11 @@ const { logWorkflowDurations } = __nccwpck_require__(5606)
 
 const repositoryName = core.getInput('repository_name')
 // repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
-if (!repositoryName || repositoryName.split('/').length !== 2 || repositoryName.split('/').some((name) => name.length === 0)) {
+if (
+  !repositoryName ||
+  repositoryName.split('/').length !== 2 ||
+  repositoryName.split('/').some((name) => name.length === 0)
+) {
   core.setFailed('Invalid repository name. It should be in the format "owner/repo".')
   process.exit(1)
 }
@@ -9894,7 +9904,7 @@ const octokit = github.getOctokit(token)
 core.info(`${owner}/${repo}`)
 core.info(workflowName)
 
-const durations = logWorkflowDurations(octokit, owner, repo, workflowName).catch(error =>{
+const durations = logWorkflowDurations(octokit, owner, repo, workflowName).catch((error) => {
   core.error(error)
   core.setFailed(error.message)
   process.exit(1)
@@ -9906,6 +9916,7 @@ durations.then((durations) => {
     core.info(`${duration.id}, ${duration.duration}, ${duration.created_at}`)
   })
 })
+
 })();
 
 module.exports = __webpack_exports__;
