@@ -1,4 +1,4 @@
-import { formatDuration } from '../durations'
+import { formatDuration } from '@/durations'
 
 describe('formatDuration', () => {
   it('should format duration in milliseconds to HH:mm:SS', () => {

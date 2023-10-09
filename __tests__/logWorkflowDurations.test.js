@@ -1,4 +1,4 @@
-import { logWorkflowDurations } from './logWorkflowDurations'
+import { logWorkflowDurations } from '@/logWorkflowDurations'
 
 describe('logWorkflowDurations', () => {
   const owner = 'owner'

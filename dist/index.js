@@ -1,71 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 1539:
-/***/ ((module) => {
-
-function formatDuration(durationInMs) {
-  const durationInSec = durationInMs / 1000;
-  const hours = Math.floor(durationInSec / 3600);
-  const minutes = Math.floor((durationInSec % 3600) / 60);
-  const seconds = Math.floor(durationInSec % 60);
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
-
-module.exports = { formatDuration };
-
-/***/ }),
-
-/***/ 7801:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const core = __nccwpck_require__(2186)
-
-const { formatDuration } = __nccwpck_require__(1539)
-
-async function logWorkflowDurations(octokit, owner, repo, workflowName) {
-  try {
-    const runs = await getWorkflowRuns(octokit, owner, repo, workflowName)
-
-    const durations = await Promise.all(runs.map(async (run) => {
-        if (!run.id || !run.created_at) return null
-  
-        const { data: duration } = await octokit.rest.actions.getWorkflowRunUsage({
-          owner,
-          repo,
-          run_id: run.id
-        })
-  
-        if (!duration.run_duration_ms) return null
-  
-        const durationFormatted = formatDuration(duration.run_duration_ms)
-        return { id: run.id, duration: durationFormatted, created_at: run.created_at }
-      }))
-  
-      // Filter out null values
-      return durations.filter(duration => duration !== null)
-  } catch(error) {
-    core.error(error)
-    core.setFailed(error.message)
-  }
-}
-
-async function getWorkflowRuns(octokit, owner, repo, workflowName) {
-  const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
-    owner,
-    repo,
-    workflow_id: workflowName
-  })
-
-  return actionsRun.workflow_runs
-}
-
-module.exports = {
-  logWorkflowDurations
-}
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -9696,6 +9631,71 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 9732:
+/***/ ((module) => {
+
+function formatDuration(durationInMs) {
+  const durationInSec = durationInMs / 1000;
+  const hours = Math.floor(durationInSec / 3600);
+  const minutes = Math.floor((durationInSec % 3600) / 60);
+  const seconds = Math.floor(durationInSec % 60);
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+module.exports = { formatDuration };
+
+/***/ }),
+
+/***/ 5606:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186)
+
+const { formatDuration } = __nccwpck_require__(9732)
+
+async function logWorkflowDurations(octokit, owner, repo, workflowName) {
+  try {
+    const runs = await getWorkflowRuns(octokit, owner, repo, workflowName)
+
+    const durations = await Promise.all(runs.map(async (run) => {
+        if (!run.id || !run.created_at) return null
+  
+        const { data: duration } = await octokit.rest.actions.getWorkflowRunUsage({
+          owner,
+          repo,
+          run_id: run.id
+        })
+  
+        if (!duration.run_duration_ms) return null
+  
+        const durationFormatted = formatDuration(duration.run_duration_ms)
+        return { id: run.id, duration: durationFormatted, created_at: run.created_at }
+      }))
+  
+      // Filter out null values
+      return durations.filter(duration => duration !== null)
+  } catch(error) {
+    core.error(error)
+    core.setFailed(error.message)
+  }
+}
+
+async function getWorkflowRuns(octokit, owner, repo, workflowName) {
+  const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
+    owner,
+    repo,
+    workflow_id: workflowName
+  })
+
+  return actionsRun.workflow_runs
+}
+
+module.exports = {
+  logWorkflowDurations
+}
+
+/***/ }),
+
 /***/ 2877:
 /***/ ((module) => {
 
@@ -9876,7 +9876,7 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(2186)
 const github = __nccwpck_require__(5438)
 
-const { logWorkflowDurations } = __nccwpck_require__(7801)
+const { logWorkflowDurations } = __nccwpck_require__(5606)
 
 const repositoryName = core.getInput('repository_name')
 // repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
