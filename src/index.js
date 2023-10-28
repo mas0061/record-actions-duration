@@ -1,5 +1,6 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
+const fs = require('fs')
 
 const { logWorkflowDurations } = require('./logWorkflowDurations')
 
@@ -31,6 +32,12 @@ const durations = logWorkflowDurations(octokit, owner, repo, workflowName).catch
 
 // durationsを1つずつcore.infoで出力する
 durations.then((durations) => {
+  const data = JSON.stringify(durations)
+  fs.writeFile('actions-duration.json', data, (err) => {
+    if (err) throw err
+    core.info('The file has been saved!')
+  })
+
   durations.forEach((duration) => {
     core.info(`${duration.id}, ${duration.duration}, ${duration.created_at}`)
   })

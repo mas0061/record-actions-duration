@@ -9881,6 +9881,7 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(2186)
 const github = __nccwpck_require__(5438)
+const fs = __nccwpck_require__(7147)
 
 const { logWorkflowDurations } = __nccwpck_require__(5606)
 
@@ -9912,6 +9913,12 @@ const durations = logWorkflowDurations(octokit, owner, repo, workflowName).catch
 
 // durationsを1つずつcore.infoで出力する
 durations.then((durations) => {
+  const data = JSON.stringify(durations)
+  fs.writeFile('actions-duration.json', data, (err) => {
+    if (err) throw err
+    core.info('The file has been saved!')
+  })
+
   durations.forEach((duration) => {
     core.info(`${duration.id}, ${duration.duration}, ${duration.created_at}`)
   })
