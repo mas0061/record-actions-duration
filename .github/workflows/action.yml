@@ -11,3 +11,4 @@ jobs:
           repository_name: 'mas0061/nuxt3-practice'
           workflow_name: 'ci.yml'
           token: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "$(cat actions-duration.json | jq .)"
