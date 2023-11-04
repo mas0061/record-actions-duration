@@ -1,10 +1,10 @@
-const core = require('@actions/core')
-const github = require('@actions/github')
-const fs = require('fs')
+import fs from 'fs'
+import * as core from '@actions/core'
+import * as github from '@actions/github'
 
-const { logWorkflowDurations } = require('./logWorkflowDurations')
+import logWorkflowDurations from './logWorkflowDurations'
 
-const repositoryName = core.getInput('repository_name')
+const repositoryName: string = core.getInput('repository_name')
 // repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
 if (
   !repositoryName ||
@@ -15,9 +15,9 @@ if (
   process.exit(1)
 }
 
-const [owner, repo] = repositoryName.split('/')
-const workflowName = core.getInput('workflow_name')
-const token = core.getInput('token')
+const [owner, repo]: string[] = repositoryName.split('/')
+const workflowName: string = core.getInput('workflow_name')
+const token: string = core.getInput('token')
 
 const octokit = github.getOctokit(token)
 

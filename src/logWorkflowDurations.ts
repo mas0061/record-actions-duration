@@ -1,8 +1,8 @@
-const core = require('@actions/core')
+import * as core from '@actions/core'
 
-const { formatDuration } = require('./durations')
+import formatDuration from './formatDurations'
 
-async function logWorkflowDurations(octokit, owner, repo, workflowName) {
+async function logWorkflowDurations(octokit, owner: string, repo: string, workflowName: string) {
   try {
     const runs = await getWorkflowRuns(octokit, owner, repo, workflowName)
 
@@ -31,7 +31,7 @@ async function logWorkflowDurations(octokit, owner, repo, workflowName) {
   }
 }
 
-async function getWorkflowRuns(octokit, owner, repo, workflowName) {
+async function getWorkflowRuns(octokit, owner: string, repo: string, workflowName: string) {
   const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
     owner,
     repo,
@@ -41,6 +41,4 @@ async function getWorkflowRuns(octokit, owner, repo, workflowName) {
   return actionsRun.workflow_runs
 }
 
-module.exports = {
-  logWorkflowDurations,
-}
+export default logWorkflowDurations
