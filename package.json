@@ -2,10 +2,10 @@
   "name": "record-actions-duration",
   "description": "",
   "version": "0.0.1",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "vitest run",
-    "bundle": "ncc build src/index.js --license license.txt",
+    "bundle": "ncc build src/index.ts --license license.txt",
     "act": "npm run bundle && act --secret-file .secrets -j test-record-actions-duration",
     "lint": "biome check src __tests__",
     "lint:fix": "biome format src __tests__ --write"
@@ -22,12 +22,12 @@
   "homepage": "https://github.com/mas0061/record-actions-duration#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
-    "@actions/github": "^5.1.1",
-    "date-fns": "^2.30.0"
+    "@actions/github": "^5.1.1"
   },
   "devDependencies": {
     "@biomejs/biome": "1.2.2",
     "@vercel/ncc": "^0.38.0",
+    "typescript": "^5.2.2",
     "vitest": "^0.34.6"
   }
 }

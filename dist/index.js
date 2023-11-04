@@ -9631,77 +9631,6 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 9732:
-/***/ ((module) => {
-
-function formatDuration(durationInMs) {
-  const durationInSec = durationInMs / 1000
-  const hours = Math.floor(durationInSec / 3600)
-  const minutes = Math.floor((durationInSec % 3600) / 60)
-  const seconds = Math.floor(durationInSec % 60)
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
-    .toString()
-    .padStart(2, '0')}`
-}
-
-module.exports = { formatDuration }
-
-
-/***/ }),
-
-/***/ 5606:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const core = __nccwpck_require__(2186)
-
-const { formatDuration } = __nccwpck_require__(9732)
-
-async function logWorkflowDurations(octokit, owner, repo, workflowName) {
-  try {
-    const runs = await getWorkflowRuns(octokit, owner, repo, workflowName)
-
-    const durations = await Promise.all(
-      runs.map(async (run) => {
-        if (!run.id || !run.created_at) return null
-
-        const { data: duration } = await octokit.rest.actions.getWorkflowRunUsage({
-          owner,
-          repo,
-          run_id: run.id,
-        })
-
-        if (!duration.run_duration_ms) return null
-
-        const durationFormatted = formatDuration(duration.run_duration_ms)
-        return { id: run.id, duration: durationFormatted, created_at: run.created_at }
-      }),
-    )
-
-    // Filter out null values
-    return durations.filter((duration) => duration !== null)
-  } catch (error) {
-    core.error(error)
-    core.setFailed(error.message)
-  }
-}
-
-async function getWorkflowRuns(octokit, owner, repo, workflowName) {
-  const { data: actionsRun } = await octokit.rest.actions.listWorkflowRuns({
-    owner,
-    repo,
-    workflow_id: workflowName,
-  })
-
-  return actionsRun.workflow_runs
-}
-
-module.exports = {
-  logWorkflowDurations,
-}
-
-
-/***/ }),
-
 /***/ 2877:
 /***/ ((module) => {
 
@@ -9871,58 +9800,218 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
-const core = __nccwpck_require__(2186)
-const github = __nccwpck_require__(5438)
-const fs = __nccwpck_require__(7147)
+"use strict";
+// ESM COMPAT FLAG
+__nccwpck_require__.r(__webpack_exports__);
 
-const { logWorkflowDurations } = __nccwpck_require__(5606)
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
+var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
+;// CONCATENATED MODULE: ./src/formatDurations.ts
+/* harmony default export */ const formatDurations = (function (durationInMs) {
+    var durationInSec = durationInMs / 1000;
+    var hours = Math.floor(durationInSec / 3600);
+    var minutes = Math.floor((durationInSec % 3600) / 60);
+    var seconds = Math.floor(durationInSec % 60);
+    return "".concat(hours.toString().padStart(2, '0'), ":").concat(minutes.toString().padStart(2, '0'), ":").concat(seconds
+        .toString()
+        .padStart(2, '0'));
+});
 
-const repositoryName = core.getInput('repository_name')
-// repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
-if (
-  !repositoryName ||
-  repositoryName.split('/').length !== 2 ||
-  repositoryName.split('/').some((name) => name.length === 0)
-) {
-  core.setFailed('Invalid repository name. It should be in the format "owner/repo".')
-  process.exit(1)
+;// CONCATENATED MODULE: ./src/logWorkflowDurations.ts
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+
+
+function logWorkflowDurations(octokit, owner, repo, workflowName) {
+    return __awaiter(this, void 0, void 0, function () {
+        var runs, durations, error_1;
+        var _this = this;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, getWorkflowRuns(octokit, owner, repo, workflowName)];
+                case 1:
+                    runs = _a.sent();
+                    return [4 /*yield*/, Promise.all(runs.map(function (run) { return __awaiter(_this, void 0, void 0, function () {
+                            var duration, durationFormatted;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        if (!run.id || !run.created_at)
+                                            return [2 /*return*/, null];
+                                        return [4 /*yield*/, octokit.rest.actions.getWorkflowRunUsage({
+                                                owner: owner,
+                                                repo: repo,
+                                                run_id: run.id,
+                                            })];
+                                    case 1:
+                                        duration = (_a.sent()).data;
+                                        if (!duration.run_duration_ms)
+                                            return [2 /*return*/, null];
+                                        durationFormatted = formatDurations(duration.run_duration_ms);
+                                        return [2 /*return*/, { id: run.id, duration: durationFormatted, created_at: run.created_at }];
+                                }
+                            });
+                        }); }))
+                        // Filter out null values
+                    ];
+                case 2:
+                    durations = _a.sent();
+                    // Filter out null values
+                    return [2 /*return*/, durations.filter(function (duration) { return duration !== null; })];
+                case 3:
+                    error_1 = _a.sent();
+                    core.error(error_1);
+                    core.setFailed(error_1.message);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
 }
+function getWorkflowRuns(octokit, owner, repo, workflowName) {
+    return __awaiter(this, void 0, void 0, function () {
+        var actionsRun;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, octokit.rest.actions.listWorkflowRuns({
+                        owner: owner,
+                        repo: repo,
+                        workflow_id: workflowName,
+                    })];
+                case 1:
+                    actionsRun = (_a.sent()).data;
+                    return [2 /*return*/, actionsRun.workflow_runs];
+            }
+        });
+    });
+}
+/* harmony default export */ const src_logWorkflowDurations = (logWorkflowDurations);
 
-const [owner, repo] = repositoryName.split('/')
-const workflowName = core.getInput('workflow_name')
-const token = core.getInput('token')
+;// CONCATENATED MODULE: ./src/index.ts
 
-const octokit = github.getOctokit(token)
 
-core.info(`${owner}/${repo}`)
-core.info(workflowName)
 
-const durations = logWorkflowDurations(octokit, owner, repo, workflowName).catch((error) => {
-  core.error(error)
-  core.setFailed(error.message)
-  process.exit(1)
-})
 
+var repositoryName = core.getInput('repository_name');
+// repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
+if (!repositoryName ||
+    repositoryName.split('/').length !== 2 ||
+    repositoryName.split('/').some(function (name) { return name.length === 0; })) {
+    core.setFailed('Invalid repository name. It should be in the format "owner/repo".');
+    process.exit(1);
+}
+var _a = repositoryName.split('/'), owner = _a[0], repo = _a[1];
+var workflowName = core.getInput('workflow_name');
+var token = core.getInput('token');
+var octokit = github.getOctokit(token);
+core.info("".concat(owner, "/").concat(repo));
+core.info(workflowName);
+var durations = src_logWorkflowDurations(octokit, owner, repo, workflowName).catch(function (error) {
+    core.error(error);
+    core.setFailed(error.message);
+    process.exit(1);
+});
 // durationsを1つずつcore.infoで出力する
-durations.then((durations) => {
-  const data = JSON.stringify(durations)
-  fs.writeFile('actions-duration.json', data, (err) => {
-    if (err) throw err
-    core.info('The file has been saved!')
-  })
-
-  durations.forEach((duration) => {
-    core.info(`${duration.id}, ${duration.duration}, ${duration.created_at}`)
-  })
-})
+durations.then(function (durations) {
+    var data = JSON.stringify(durations);
+    external_fs_default().writeFile('actions-duration.json', data, function (err) {
+        if (err)
+            throw err;
+        core.info('The file has been saved!');
+    });
+    durations.forEach(function (duration) {
+        core.info("".concat(duration.id, ", ").concat(duration.duration, ", ").concat(duration.created_at));
+    });
+});
 
 })();
 
