@@ -4,7 +4,7 @@ import * as github from '@actions/github'
 
 import logWorkflowDurations from './logWorkflowDurations'
 
-const repositoryName: string = core.getInput('repository_name')
+const repositoryName: string = process.env.REPOSITORY_NAME
 // repositoryNameが / で2つの文字列に分割でき、それぞれの文字列長が1以上ない場合はエラーになる
 if (
   !repositoryName ||
@@ -16,8 +16,8 @@ if (
 }
 
 const [owner, repo]: string[] = repositoryName.split('/')
-const workflowName: string = core.getInput('workflow_name')
-const token: string = core.getInput('token')
+const workflowName: string = process.env.WORKFLOW_NAME
+const token: string = process.env.TOKEN
 
 const octokit = github.getOctokit(token)
 
