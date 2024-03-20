@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'node:fs'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
@@ -38,7 +38,7 @@ durations.then((durations) => {
     core.info('The file has been saved!')
   })
 
-  durations.forEach((duration) => {
+  for (const duration of durations) {
     core.info(`${duration.id}, ${duration.duration}, ${duration.created_at}`)
-  })
+  }
 })
