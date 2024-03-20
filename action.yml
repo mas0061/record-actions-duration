@@ -1,5 +1,7 @@
 name: 'record-actions-duration'
+
 description: 'This custom action records the execution time of GitHub Actions.'
+
 inputs:
   repository_name:
     description: 'Repository name of the Actions you want to measure'
@@ -10,6 +12,16 @@ inputs:
   token:
     description: 'Token of the repository to be measured'
     required: true
+
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: composite
+  steps:
+    - uses: oven-sh/setup-bun@v1
+    - run: bun install
+      shell: bash
+    - run: bun run ${GITHUB_ACTION_PATH}/src/index.ts
+      shell: bash
+      env:
+        REPOSITORY_NAME: ${{ inputs.repository_name }}
+        WORKFLOW_NAME: ${{ inputs.workflow_name }}
+        TOKEN: ${{ inputs.token }}
