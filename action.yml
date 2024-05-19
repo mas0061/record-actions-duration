@@ -14,14 +14,5 @@ inputs:
     required: true
 
 runs:
-  using: composite
-  steps:
-    - uses: oven-sh/setup-bun@v1
-    - run: bun install
-      shell: bash
-    - run: bun run ${GITHUB_ACTION_PATH}/src/index.ts
-      shell: bash
-      env:
-        REPOSITORY_NAME: ${{ inputs.repository_name }}
-        WORKFLOW_NAME: ${{ inputs.workflow_name }}
-        TOKEN: ${{ inputs.token }}
+  using: node20
+  main: dist/main.js

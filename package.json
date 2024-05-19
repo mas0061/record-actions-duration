@@ -2,12 +2,13 @@
   "name": "record-actions-duration",
   "description": "",
   "version": "0.0.1",
-  "main": "src/index.ts",
+  "main": "src/main.ts",
   "scripts": {
     "test": "vitest run",
     "act": "act --secret-file .secrets -j test-record-actions-duration",
-    "lint": "biome check src __tests__",
-    "lint:fix": "biome format src __tests__ --write"
+    "lint": "biome check .",
+    "lint:fix": "biome format . --write",
+    "bundle": "bun build ./src/main.ts --outdir dist --target node"
   },
   "repository": {
     "type": "git",
@@ -24,9 +25,9 @@
     "@actions/github": "6.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.6.1",
+    "@biomejs/biome": "1.7.3",
     "@types/bun": "latest",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.6"
+    "typescript": "5.4.5",
+    "vitest": "1.6.0"
   }
 }
