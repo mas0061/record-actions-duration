@@ -5,7 +5,7 @@ export default defineConfig({
     include: ['__tests__/**/*.test.ts'],
     globals: true,
     alias: {
-      '@': '/src'
-    }
+      '@': '/src',
+    },
   },
 })
