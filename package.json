@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/mas0061/record-actions-duration#readme",
   "dependencies": {
-    "@actions/core": "2.0.2",
+    "@actions/core": "3.0.0",
     "@actions/github": "9.0.0"
   },
   "devDependencies": {
